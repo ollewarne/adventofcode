@@ -4,6 +4,7 @@ const idRange = fs.readFileSync('./input.txt', { encoding: 'utf8' }).split(",").
 
 let invalidIdTotal = 0;
 let secondTotal = 0;
+let testingTotal = 0;
 
 for (let id of idRange) {
     let [start, end] = id.split("-").map(Number);
@@ -16,9 +17,8 @@ for (let id of idRange) {
             invalidIdTotal += i;
         }
 
-        if (/^(\d+)\1$/.test(str) || /^(\d+)\1+$/.test(str)) {
+        if (/^(\d+)\1+$/.test(str)) {
             secondTotal += i;
-            continue;
         }
     }
 }
