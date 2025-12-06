@@ -2,25 +2,21 @@ import fs from 'fs';
 
 const data = fs.readFileSync('./input.txt', { encoding: 'utf8' }).split('\n\n');
 
-const ranges = data[0].split('\n');;
+const ranges = data[0].split('\n');
 const ids = data[1].split('\n');
 
 let freshCount = 0;
 let idSet = new Set();
 
 for (let range of ranges) {
-    let splitRange = range.split('-');
-    let start = +splitRange[0];
-    let end = +splitRange[1];
-    for (let id of ids) {
-        if (!id) continue;
-        let idNum = parseInt(id);
-
+    let [start, end] = range.split('-').map(Number);
+    for (let idNum of ids.map(Number)) {
+        if (!idNum) continue;
         //part one
-        if (!idSet.has(id)) {
+        if (!idSet.has(idNum)) {
             if (idNum >= start && idNum <= end) {
                 freshCount++
-                idSet.add(id);
+                idSet.add(idNum);
             }
         }
     }
