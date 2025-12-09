@@ -22,65 +22,25 @@ for (let range of ranges) {
     }
 }
 
-// save relevant ranges only
+
 let totalIds = 0;
-let relevantRanges = [];
-for (let id of ids) {
-    let idNum = parseInt(id);
-    for (let range of ranges) {
-        let splitRange = range.split('-');
-        let start = +splitRange[0];
-        let end = +splitRange[1];
-        if (idNum >= start && idNum <= end && !relevantRanges.includes(range)) {
-            relevantRanges.push(range);
-        }
+let relevantRanges = ranges.map(x => x.split('-').map(Number))
+
+relevantRanges.sort((a, b) => a[0] - b[0])
+
+let current = relevantRanges[0];
+
+let outputArr = new Set();
+
+for (let i = 1; i < relevantRanges.length; i++) {
+    if (current[1] >= relevantRanges[i][0]) {
+        current[1] = Math.max(relevantRanges[i][1], current[1]);
+        continue;
     }
+    outputArr.add(current);
+    current = relevantRanges[i];
 }
-
-relevantRanges = relevantRanges.map(range => range.split("-").map(Number))
-
-for (let range of relevantRanges) {
-
-    for (let i = 0; i < relevantRanges.length; i++) {
-        if (range[0] <= relevantRanges[i][0] && range[1] >= relevantRanges[i][1]) {
-            relevantRanges[i] = range;
-            continue;
-        }
-
-        if (range[0] < relevantRanges[i][0] && range[1] < relevantRanges[i][1] && range[1] > relevantRanges[i][0]) {
-            relevantRanges[i][0] = range[0];
-            range[1] = relevantRanges[i][1];
-            continue;
-        }
-
-        if (range[0] > relevantRanges[i][0] && range[1] > relevantRanges[i][1] && range[0] < relevantRanges[i][1]) {
-            range[0] = relevantRanges[i][0];
-            relevantRanges[i][1] = range[1];
-            continue;
-        }
-
-        if (range[1] === relevantRanges[i][0]) {
-            range[1] = relevantRanges[i][1];
-            continue;
-        }
-
-        if (range[0] === relevantRanges[i][1]) {
-            range[0] = relevantRanges[i][0];
-            continue;
-        }
-    }
-}
-
-let testSet = new Set();
-let outputArr = [];
-
-for (let i of relevantRanges) {
-    let key = JSON.stringify(i);
-    if (!testSet.has(key)) {
-        testSet.add(key);
-        outputArr.push(i);
-    }
-}
+outputArr.add(current);
 
 for (let thing of outputArr) {
     totalIds += (thing[1] - thing[0] + 1);
